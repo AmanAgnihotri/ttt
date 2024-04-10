@@ -1,0 +1,32 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+    environment:
+      MongoDB_ConnectionString: "mongodb://root:testing1234@mongodb:27017/admin"
+      MongoDB_DatabasePrefix: "ttt"
+      JWT_Audience: "t"
+      JWT_Issuer: "t"
+      JWT_Secret: "gGoJvYfp17VlXzEQArKJiY72Ef4s85q6bdF2o4ynWNiMhNLz6MXRqcWU3v4q5gwz"
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:7.0
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "testing1234"
+      MONGO_INITDB_DATABASE: "admin"
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+volumes:
+  mongodata:
