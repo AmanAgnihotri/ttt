@@ -3,7 +3,12 @@
 
 package http
 
+import (
+	"github.com/lesismal/nbio/nbhttp/websocket"
+)
+
 type Router interface {
 	Handle(pattern string, handler func(ctx *Context))
 	HandleWithAuth(pattern string, handler func(ctx *Context))
+	Upgrade(ctx *Context) (*websocket.Conn, error)
 }
