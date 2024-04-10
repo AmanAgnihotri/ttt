@@ -141,3 +141,11 @@ func (c *Context) Cached(data any, knownEtag string) {
 		}
 	}
 }
+
+func (c *Context) req() *http.Request {
+	return c.r
+}
+
+func (c *Context) rw() http.ResponseWriter {
+	return c.ResponseWriter
+}

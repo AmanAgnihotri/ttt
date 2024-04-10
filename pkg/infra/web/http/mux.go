@@ -5,8 +5,11 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
+
+	"github.com/lesismal/nbio/nbhttp/websocket"
 
 	"ttt/pkg/api/jwt"
 )
@@ -61,4 +64,15 @@ func (m *Mux) getAccessToken(req *http.Request) (string, bool) {
 	}
 
 	return "", false
+}
+
+var upgrader = websocket.NewUpgrader()
+
+func (m *Mux) Upgrade(ctx *Context) (*websocket.Conn, error) {
+	conn, err := upgrader.Upgrade(ctx.rw(), ctx.req(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("error upgrading connection: %w", err)
+	}
+
+	return conn, nil
 }
