@@ -58,6 +58,8 @@ func main() {
 		ctx.PlainText("ok")
 	})
 
+	lib.Configure(name, dbContext, jwtContext, mux)
+
 	server := http.NewServer(name, address, maxLoad, mux)
 
 	if err = server.Start(); err != nil {
