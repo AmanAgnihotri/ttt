@@ -1,0 +1,51 @@
+# Exclude version control directories
+.git/
+.github/
+
+# Exclude version control and related files
+.gitignore
+.gitattributes
+.editorconfig
+.tokeignore
+Makefile
+COPYING
+
+# Exclude CI/CD configuration files
+.golangci.yml
+.pre-commit-config.yaml
+qodana.yaml
+
+# Exclude Docker related files to avoid redundancy
+.docker
+.dockerignore
+
+# Exclude compiled object files, archives, and executables
+*.o
+*.a
+*.so
+**/bin/
+**/obj/
+
+# Exclude editor settings and backup files
+.idea/
+*.swp
+*.swo
+.vscode/
+*.bak
+*.tmp
+
+# Exclude test, benchmark, and example files
+*_test.go
+*_benchmark.go
+*_example.go
+
+# Exclude directories that are not needed
+vendor/
+bin/
+testdata/
+
+# Exclude common Go directories that don't need to be part of the build
+examples/
+samples/
+docs/
+scripts/
