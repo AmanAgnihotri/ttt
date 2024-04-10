@@ -8,7 +8,22 @@ const (
 
 	CreateTime = "createTime"
 	UpdateTime = "updateTime"
+	FinishTime = "finishTime"
 	ExpiryTime = "expiryTime"
+
+	Code    = "code"
+	Outcome = "outcome"
+
+	Winner       = "winner"
+	WinnerID     = "winner.id"
+	WinnerMethod = "winner.method"
+
+	Users    = "users"
+	UserID   = "user.id"
+	UserNick = "user.nick"
+	UserSide = "user.side"
+
+	Moves = "moves"
 
 	Nick       = "nick"
 	Group      = "group"
