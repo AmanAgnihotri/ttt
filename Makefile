@@ -3,7 +3,7 @@
 BUILD_PATH = ./cmd/main
 BINARY_PATH := ./bin/main
 
-.PHONY: tidy lint build clean
+.PHONY: tidy lint build clean compose
 
 # tidy for managing dependencies
 tidy:
@@ -20,3 +20,8 @@ build: lint
 # clean up the bin directory
 clean:
 	rm -rf bin/
+
+# run via docker compose
+compose:
+	docker compose up --build -d
+	docker compose watch
