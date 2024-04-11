@@ -16,7 +16,6 @@ linters:
 
   disable:
     - containedctx
-    - depguard
     - gochecknoglobals
     - gochecknoinits
     - gofumpt
@@ -34,6 +33,65 @@ linters:
     - varcheck
 
 linters-settings:
+  # Checks if package imports are in a list of acceptable packages.
+  depguard:
+    rules:
+      main:
+        # Used to determine the package matching priority.
+        # There are three different modes: `original`, `strict`, and `lax`.
+        # Default: "original"
+        list-mode: lax
+        # List of file globs that will match this list of settings to compare against.
+        # Default: $all
+        files:
+          - "$all"
+        # List of allowed packages.
+        allow:
+          - "$gostd"
+        deny:
+          - pkg: "io/ioutil"
+            desc: "replaced by io and os packages since Go 1.16"
+          - pkg: "reflect"
+            desc: "not allowed"
+      domain:
+        list-mode: lax
+        files:
+          - "**/domain/**"
+        deny:
+          - pkg: "github.com/lesismal/nbio"
+            desc: not allowed
+          - pkg: "go.mongodb.org/mongo-driver"
+            desc: not allowed
+          - pkg: "github.com/golang-jwt/jwt/v5"
+            desc: not allowed
+      api:
+        list-mode: lax
+        files:
+          - "**/api/**"
+        deny:
+          - pkg: "github.com/lesismal/nbio"
+            desc: not allowed
+          - pkg: "go.mongodb.org/mongo-driver"
+            desc: not allowed
+      data:
+        list-mode: lax
+        files:
+          - "**/infra/data/**"
+        deny:
+          - pkg: "github.com/lesismal/nbio"
+            desc: not allowed
+          - pkg: "github.com/golang-jwt/jwt/v5"
+            desc: not allowed
+      web:
+        list-mode: lax
+        files:
+          - "**/infra/web/**"
+        deny:
+          - pkg: "github.com/golang-jwt/jwt/v5"
+            desc: not allowed
+          - pkg: "go.mongodb.org/mongo-driver"
+            desc: not allowed
+
   # Checks function and package cyclomatic complexity.
   cyclop:
     # The maximal code complexity to report.
