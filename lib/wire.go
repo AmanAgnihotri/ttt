@@ -6,6 +6,10 @@ package lib
 import (
 	"context"
 	"log"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
 
 	"ttt/internal/base"
 	"ttt/internal/game"
@@ -40,4 +44,33 @@ func ensureIndexes(base base.Wire) {
 			log.Println(err)
 		}
 	}
+}
+
+func EnsureWatchers(base base.Wire) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var watchers = []db.Watcher{
+		base.AppStore(),
+	}
+
+	var waitGroup sync.WaitGroup
+
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
+
+	for _, watcher := range watchers {
+		waitGroup.Add(1)
+
+		go func(w db.Watcher) {
+			defer waitGroup.Done()
+
+			err := w.Watch(ctx)
+			log.Println(err)
+		}(watcher)
+	}
+
+	<-done
+	cancel()
+	waitGroup.Wait()
 }
