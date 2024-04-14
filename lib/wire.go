@@ -4,6 +4,9 @@
 package lib
 
 import (
+	"context"
+	"log"
+
 	"ttt/internal/base"
 	"ttt/internal/game"
 	"ttt/internal/user"
@@ -19,4 +22,22 @@ func Configure(appID string, db *db.Context, jwt *jwt.Context, mux *http.Mux) {
 
 	game.Configure(baseWire)
 	user.Configure(baseWire)
+
+	ensureIndexes(baseWire)
+}
+
+func ensureIndexes(base base.Wire) {
+	ctx := context.Background()
+
+	var indexers = []db.Indexer{
+		base.GameStore(),
+		base.UserStore(),
+	}
+
+	for _, indexer := range indexers {
+		err := indexer.EnsureIndexes(ctx)
+		if err != nil {
+			log.Println(err)
+		}
+	}
 }
