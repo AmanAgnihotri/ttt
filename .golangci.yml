@@ -67,6 +67,14 @@ linters-settings:
     # Default: false
     custom-order: true
 
+  # Checks if all structure fields are initialized.
+  exhaustruct:
+    # List of regexes to exclude struct packages and their names from checks.
+    # Regexes must match complete canonical struct package/name.
+    # Default: []
+    exclude:
+      - '.+/nbhttp\.Config'
+
   # Check exhaustiveness of enum switch statements.
   exhaustive:
     # Program elements to check for exhaustiveness.
