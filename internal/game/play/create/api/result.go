@@ -22,7 +22,7 @@ type StartedResult struct {
 type SyncResult struct {
 	ID         game.ID        `json:"id"`
 	Users      []user.User    `json:"users"`
-	Moves      []game.Move    `json:"moves"`
+	Moves      []game.Move    `json:"moves,omitempty"`
 	State      string         `json:"state"`
 	Marks      string         `json:"marks"`
 	SideToPlay user.Side      `json:"sideToPlay,omitempty"`
