@@ -11,7 +11,7 @@ import (
 
 const (
 	bufferSize         = 2
-	maxDurationPerMove = 120 * time.Second
+	maxDurationPerMove = 60 * time.Second
 )
 
 type Handler interface {
