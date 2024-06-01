@@ -21,16 +21,8 @@ linters:
     - gofumpt
     - ireturn
     # deprecated linters
-    - deadcode
-    - exhaustivestruct
-    - golint
-    - ifshort
-    - interfacer
-    - maligned
-    - nosnakecase
-    - scopelint
-    - structcheck
-    - varcheck
+    - gomnd
+    - execinquery
 
 linters-settings:
   # Checks if package imports are in a list of acceptable packages.
