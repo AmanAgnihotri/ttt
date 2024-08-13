@@ -26,12 +26,12 @@ func NewStore(db db.Service) *Store {
 
 func (s *Store) EnsureIndexes(ctx context.Context) error {
 	nickIndex := mongo.IndexModel{
-		Keys:    bson.D{{Key: "nick_1", Value: 1}},
+		Keys:    bson.D{{Key: "nick", Value: 1}},
 		Options: options.Index().SetUnique(true),
 	}
 
 	expiryTimeIndex := mongo.IndexModel{
-		Keys:    bson.D{{Key: "expiryTime_1", Value: 1}},
+		Keys:    bson.D{{Key: "expiryTime", Value: 1}},
 		Options: options.Index().SetExpireAfterSeconds(0),
 	}
 
