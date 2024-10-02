@@ -23,6 +23,7 @@ linters:
     # deprecated linters
     - gomnd
     - execinquery
+    - exportloopref
 
 linters-settings:
   # Checks if package imports are in a list of acceptable packages.
