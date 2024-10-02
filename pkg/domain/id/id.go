@@ -22,7 +22,13 @@ func NewID() (int64, bool) {
 
 	randomID := binary.BigEndian.Uint64(bytes[:])
 
-	positiveID := int64(randomID & math.MaxInt64)
+	maskedID := randomID & uint64(math.MaxInt64)
+
+	if maskedID > uint64(math.MaxInt64) {
+		return 0, false
+	}
+
+	positiveID := int64(maskedID)
 
 	clampedID := MinID + (positiveID % (MaxID - MinID + 1))
 
