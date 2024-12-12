@@ -21,8 +21,6 @@ linters:
     - gofumpt
     - ireturn
     # deprecated linters
-    - gomnd
-    - execinquery
     - exportloopref
 
 linters-settings:
