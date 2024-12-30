@@ -1,6 +1,12 @@
+networks:
+  default:
+    name: ttt
+
 services:
   app:
     build: .
+    image: ttt:latest
+    container_name: ttt
     ports:
       - "8080:8080"
     develop:
@@ -18,6 +24,7 @@ services:
 
   mongodb:
     image: mongo:7.0
+    container_name: ttt-mongodb
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: "root"
@@ -26,7 +33,8 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongodata:/data/db
+      - mongo:/data/db
 
 volumes:
-  mongodata:
+  mongo:
+    name: ttt
