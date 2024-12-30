@@ -68,7 +68,7 @@ func main() {
 		return
 	}
 
-	log.Printf("listening on %s\n", address)
+	log.Printf("%s listening on %s\n", name, address)
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
