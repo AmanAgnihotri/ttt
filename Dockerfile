@@ -2,30 +2,34 @@
 FROM golang:alpine AS builder
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /src
 
-# Copy the source code into the container
-COPY . .
+# Set some environment variables
+ENV CGO_ENABLED=0
+ENV GOMODCACHE=/go/pkg/mod
+ENV GOCACHE=/root/.cache/go-build
 
-# Download all dependencies
-RUN go mod download
-
-# Build the Go app
-RUN cd ./cmd/main && CGO_ENABLED=0 GOOS=linux go build -o /main
+# Build the go app
+RUN --mount=type=cache,target=$GOMODCACHE \
+--mount=type=cache,target=$GOCACHE \
+--mount=type=bind,target=. \
+cd ./cmd/main && go build -ldflags="-w -s" -o /ttt
 
 # Start a new stage from scratch for the final image
-FROM alpine:latest
+FROM alpine:latest AS final
 
+# Set the working directory in the container
 WORKDIR /
 
-# Copy the pre-built binary file from the previous stage
-COPY --from=builder /main .
-
 # Set the timezone and install CA certificates
-RUN apk --no-cache add ca-certificates tzdata
+RUN --mount=type=cache,target=/var/cache/apk \
+apk --update add ca-certificates tzdata && update-ca-certificates
 
 # Expose port
 EXPOSE 8080
 
+# Copy the pre-built binary file from the previous stage
+COPY --from=builder /ttt .
+
 # Command to run the executable
-ENTRYPOINT ["./main"]
+ENTRYPOINT ["./ttt"]
