@@ -4,6 +4,7 @@
 package api
 
 import (
+	"sync"
 	"time"
 
 	"ttt/internal/game/play/create/domain"
@@ -28,6 +29,7 @@ func NewHandler(game *domain.Game) Handler {
 		incoming: make(chan domain.Command, bufferSize),
 		game:     game,
 		Service:  NewService(game),
+		RWMutex:  sync.RWMutex{},
 	}
 }
 
@@ -35,6 +37,7 @@ type handler struct {
 	incoming chan domain.Command
 	game     *domain.Game
 	Service
+	sync.RWMutex
 }
 
 func (h *handler) Handle(command domain.Command) {
@@ -50,6 +53,9 @@ func (h *handler) Loop() <-chan Result {
 }
 
 func (h *handler) Sync() SyncResult {
+	h.RLock()
+	defer h.RUnlock()
+
 	return h.SyncResult()
 }
 
@@ -71,7 +77,9 @@ func (h *handler) loop(outgoing chan<- Result) {
 		select {
 		case command := <-h.incoming:
 			if play, ok := command.(domain.Play); ok {
+				h.Lock()
 				event := h.game.Apply(play)
+				h.Unlock()
 
 				switch event {
 				case domain.Applied:
@@ -96,7 +104,10 @@ func (h *handler) loop(outgoing chan<- Result) {
 
 		case <-ticker.C:
 			ticker.Stop()
+
+			h.Lock()
 			h.game.TimedOut(time.Now().UTC())
+			h.Unlock()
 
 			outgoing <- h.EndedResult()
 
