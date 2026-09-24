@@ -1,9 +1,10 @@
-// Copyright 2024 Aman Agnihotri
+// Copyright 2024-2026 Aman Agnihotri
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package adjective_test
 
 import (
+	"slices"
 	"testing"
 
 	"ttt/pkg/domain/nick/internal/adjective"
@@ -26,11 +27,5 @@ func isValid(adjective adjective.Adjective, possibleValues []string) bool {
 		return false
 	}
 
-	for _, v := range possibleValues {
-		if v == adjectiveAsString {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(possibleValues, adjectiveAsString)
 }

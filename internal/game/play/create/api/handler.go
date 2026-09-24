@@ -1,4 +1,4 @@
-// Copyright 2024 Aman Agnihotri
+// Copyright 2024-2026 Aman Agnihotri
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package api
@@ -49,6 +49,14 @@ func (h *handler) Loop() <-chan Result {
 	return outgoing
 }
 
+func (h *handler) Sync() SyncResult {
+	return h.SyncResult()
+}
+
+func (h *handler) Game() *domain.Game {
+	return h.game
+}
+
 func (h *handler) loop(outgoing chan<- Result) {
 	outgoing <- h.StartedResult()
 
@@ -68,10 +76,12 @@ func (h *handler) loop(outgoing chan<- Result) {
 				switch event {
 				case domain.Applied:
 					ticker.Reset(maxDurationPerMove)
+
 					outgoing <- h.MoveResult()
 
 				case domain.Completed, domain.Unplayable:
 					ticker.Stop()
+
 					outgoing <- h.EndedResult()
 
 					return
@@ -87,17 +97,10 @@ func (h *handler) loop(outgoing chan<- Result) {
 		case <-ticker.C:
 			ticker.Stop()
 			h.game.TimedOut(time.Now().UTC())
+
 			outgoing <- h.EndedResult()
 
 			return
 		}
 	}
-}
-
-func (h *handler) Sync() SyncResult {
-	return h.SyncResult()
-}
-
-func (h *handler) Game() *domain.Game {
-	return h.game
 }

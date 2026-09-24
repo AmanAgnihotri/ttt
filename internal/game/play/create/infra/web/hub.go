@@ -1,4 +1,4 @@
-// Copyright 2024 Aman Agnihotri
+// Copyright 2024-2026 Aman Agnihotri
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package web
@@ -73,5 +73,6 @@ func (h *hub) create(gameID game.ID) *Controller {
 func (h *hub) delete(gameID game.ID) {
 	h.Lock()
 	defer h.Unlock()
+
 	delete(h.controllers, gameID)
 }

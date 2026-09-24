@@ -1,153 +1,129 @@
+version: "2"
 run:
   concurrency: 4
-  timeout: 5m
   issues-exit-code: 2
   tests: true
-
 output:
-  print-issued-lines: true
-  print-linter-name: true
-  uniq-by-line: true
   path-prefix: ""
-  sort-results: true
-
 linters:
-  enable-all: true
-
+  default: all
   disable:
     - containedctx
     - gochecknoglobals
     - gochecknoinits
-    - gofumpt
     - ireturn
-    # deprecated linters
-    - exportloopref
-
-linters-settings:
-  # Checks if package imports are in a list of acceptable packages.
-  depguard:
+    - embeddedstructfieldcheck
+    - noinlineerr
+    - exhaustruct
+    - gomodguard
+    - wsl
+  settings:
+    cyclop:
+      max-complexity: 9
+      package-average: 6
+    depguard:
+      rules:
+        api:
+          list-mode: lax
+          files:
+            - '**/api/**'
+          deny:
+            - pkg: github.com/lesismal/nbio
+              desc: not allowed
+            - pkg: go.mongodb.org/mongo-driver
+              desc: not allowed
+        data:
+          list-mode: lax
+          files:
+            - '**/infra/data/**'
+          deny:
+            - pkg: github.com/lesismal/nbio
+              desc: not allowed
+            - pkg: github.com/golang-jwt/jwt/v5
+              desc: not allowed
+        domain:
+          list-mode: lax
+          files:
+            - '**/domain/**'
+          deny:
+            - pkg: github.com/lesismal/nbio
+              desc: not allowed
+            - pkg: go.mongodb.org/mongo-driver
+              desc: not allowed
+            - pkg: github.com/golang-jwt/jwt/v5
+              desc: not allowed
+        main:
+          list-mode: lax
+          files:
+            - $all
+          allow:
+            - $gostd
+          deny:
+            - pkg: io/ioutil
+              desc: replaced by io and os packages since Go 1.16
+            - pkg: reflect
+              desc: not allowed
+        web:
+          list-mode: lax
+          files:
+            - '**/infra/web/**'
+          deny:
+            - pkg: github.com/golang-jwt/jwt/v5
+              desc: not allowed
+            - pkg: go.mongodb.org/mongo-driver
+              desc: not allowed
+    exhaustive:
+      check:
+        - switch
+        - map
+      default-signifies-exhaustive: true
+    exhaustruct_v5:
+      ignore-patterns:
+        - .+/nbhttp\.Config
+    predeclared:
+      ignore:
+        - delete
+      qualified-name: true
+    varnamelen:
+      ignore-names:
+        - ok
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
     rules:
-      main:
-        # Used to determine the package matching priority.
-        # There are three different modes: `original`, `strict`, and `lax`.
-        # Default: "original"
-        list-mode: lax
-        # List of file globs that will match this list of settings to compare against.
-        # Default: $all
-        files:
-          - "$all"
-        # List of allowed packages.
-        allow:
-          - "$gostd"
-        deny:
-          - pkg: "io/ioutil"
-            desc: "replaced by io and os packages since Go 1.16"
-          - pkg: "reflect"
-            desc: "not allowed"
-      domain:
-        list-mode: lax
-        files:
-          - "**/domain/**"
-        deny:
-          - pkg: "github.com/lesismal/nbio"
-            desc: not allowed
-          - pkg: "go.mongodb.org/mongo-driver"
-            desc: not allowed
-          - pkg: "github.com/golang-jwt/jwt/v5"
-            desc: not allowed
-      api:
-        list-mode: lax
-        files:
-          - "**/api/**"
-        deny:
-          - pkg: "github.com/lesismal/nbio"
-            desc: not allowed
-          - pkg: "go.mongodb.org/mongo-driver"
-            desc: not allowed
-      data:
-        list-mode: lax
-        files:
-          - "**/infra/data/**"
-        deny:
-          - pkg: "github.com/lesismal/nbio"
-            desc: not allowed
-          - pkg: "github.com/golang-jwt/jwt/v5"
-            desc: not allowed
-      web:
-        list-mode: lax
-        files:
-          - "**/infra/web/**"
-        deny:
-          - pkg: "github.com/golang-jwt/jwt/v5"
-            desc: not allowed
-          - pkg: "go.mongodb.org/mongo-driver"
-            desc: not allowed
-
-  # Checks function and package cyclomatic complexity.
-  cyclop:
-    # The maximal code complexity to report.
-    # Default: 10
-    max-complexity: 9
-    # The maximal average package complexity.
-    # If it's higher than 0.0 (float) the check is enabled
-    # Default: 0.0
-    package-average: 6.0
-    # Should ignore tests.
-    # Default: false
-    skip-tests: true
-
-  # Gci controls Go package import order and makes it always deterministic.
-  gci:
-    # Section configuration to compare against.
-    # Section names are case-insensitive and may contain parameters in ().
-    # The default order of sections is `standard > default > custom > blank > dot > alias`,
-    # If `custom-order` is `true`, it follows the order of `sections` option.
-    # Default: ["standard", "default"]
-    sections:
-      - standard # Standard section: captures all standard packages.
-      - default # Default section: contains all imports that could not be matched to another section type.
-      - prefix(ttt) # Custom: groups all imports with the specified Prefix.
-      - blank
-      - dot
-      - alias
-
-    # Enable custom order of sections.
-    # If `true`, make the section order the same as the order of `sections`.
-    # Default: false
-    custom-order: true
-
-  # Checks if all structure fields are initialized.
-  exhaustruct:
-    # List of regexes to exclude struct packages and their names from checks.
-    # Regexes must match complete canonical struct package/name.
-    # Default: []
-    exclude:
-      - '.+/nbhttp\.Config'
-
-  # Check exhaustiveness of enum switch statements.
-  exhaustive:
-    # Program elements to check for exhaustiveness.
-    # Default: [ switch ]
-    check:
-      - switch
-      - map
-    # Presence of "default" case in switch statements satisfies exhaustiveness,
-    # even if all enum members are not listed.
-    # Default: false
-    default-signifies-exhaustive: true
-
-  # Find code that shadows one of Go's predeclared identifiers.
-  predeclared:
-    # Comma-separated list of predeclared identifiers to not report on.
-    # Default: ""
-    ignore: "delete"
-    # Include method names and field names (i.e., qualified names) in checks.
-    # Default: false
-    q: true
-
-  # Checks that the length of a variable's name matches its scope.
-  varnamelen:
-    # Optional list of variable names that should be ignored completely.
-    # Default: []
-    ignore-names:
-      - ok
+      - linters:
+          - cyclop
+        path: (.+)_test\.go
+      - linters:
+          - gosec
+        path: (.+)_test\.go
+        text: G101
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - goimports
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(ttt)
+        - blank
+        - dot
+        - alias
+      custom-order: true
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

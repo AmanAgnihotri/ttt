@@ -1,4 +1,4 @@
-// Copyright 2024 Aman Agnihotri
+// Copyright 2024-2026 Aman Agnihotri
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package http
@@ -55,17 +55,6 @@ func (m *Mux) HandleWithAuth(pattern string, handler func(ctx *Context)) {
 	})
 }
 
-func (m *Mux) getAccessToken(req *http.Request) (string, bool) {
-	const prefix = jwt.Type + " "
-
-	header := req.Header.Get("Authorization")
-	if strings.HasPrefix(header, prefix) {
-		return strings.TrimPrefix(header, prefix), true
-	}
-
-	return "", false
-}
-
 var upgrader = websocket.NewUpgrader()
 
 func (m *Mux) Upgrade(ctx *Context) (*websocket.Conn, error) {
@@ -75,4 +64,15 @@ func (m *Mux) Upgrade(ctx *Context) (*websocket.Conn, error) {
 	}
 
 	return conn, nil
+}
+
+func (m *Mux) getAccessToken(req *http.Request) (string, bool) {
+	const prefix = jwt.Type + " "
+
+	header := req.Header.Get("Authorization")
+	if after, ok := strings.CutPrefix(header, prefix); ok {
+		return after, true
+	}
+
+	return "", false
 }

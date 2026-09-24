@@ -1,4 +1,4 @@
-// Copyright 2024 Aman Agnihotri
+// Copyright 2024-2026 Aman Agnihotri
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package domain
@@ -10,7 +10,7 @@ import (
 	"ttt/internal/game/common/domain/board"
 )
 
-type Command interface{}
+type Command any
 
 type Play struct {
 	UserID   user.ID

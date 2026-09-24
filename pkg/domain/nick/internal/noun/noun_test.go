@@ -1,9 +1,10 @@
-// Copyright 2024 Aman Agnihotri
+// Copyright 2024-2026 Aman Agnihotri
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package noun_test
 
 import (
+	"slices"
 	"testing"
 
 	"ttt/pkg/domain/nick/internal/noun"
@@ -26,11 +27,5 @@ func isValid(noun noun.Noun, possibleValues []string) bool {
 		return false
 	}
 
-	for _, v := range possibleValues {
-		if v == nounAsString {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(possibleValues, nounAsString)
 }

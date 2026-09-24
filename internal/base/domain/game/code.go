@@ -1,4 +1,4 @@
-// Copyright 2024 Aman Agnihotri
+// Copyright 2024-2026 Aman Agnihotri
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package game
@@ -24,8 +24,8 @@ func init() {
 
 	mapping = make(map[rune]byte, len(chars)+len(extra))
 
-	for _, c := range chars {
-		mapping[c] = byte(c)
+	for i := range len(chars) {
+		mapping[rune(chars[i])] = chars[i]
 	}
 
 	mapping['I'] = '1'

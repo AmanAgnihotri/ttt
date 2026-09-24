@@ -1,4 +1,4 @@
-// Copyright 2024 Aman Agnihotri
+// Copyright 2024-2026 Aman Agnihotri
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package app
@@ -34,7 +34,7 @@ func NewStore(id string, db db.Service) *Store {
 }
 
 func (s *Store) GetApp(ctx context.Context) *app.App {
-	s.Once.Do(func() {
+	s.Do(func() {
 		s.app.Store(s.newApp(s.loadDao(ctx)))
 	})
 

@@ -1,4 +1,4 @@
-// Copyright 2024 Aman Agnihotri
+// Copyright 2024-2026 Aman Agnihotri
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package web
@@ -209,15 +209,18 @@ func (c *Controller) cleanCloseAll() {
 
 func (c *Controller) forAll(f func(conn *Conn)) {
 	c.RLock()
+
 	for _, conn := range c.connections {
 		f(conn)
 	}
+
 	c.RUnlock()
 }
 
 func (c *Controller) create(userID user.ID, conn *Conn) {
 	c.Lock()
 	defer c.Unlock()
+
 	c.connections[userID] = conn
 }
 
