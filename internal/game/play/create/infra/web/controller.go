@@ -60,6 +60,8 @@ func (c *Controller) Handle(userID user.ID, conn *Conn) {
 
 		if handler == nil {
 			conn.CloseAsInvalidMessage()
+
+			return
 		}
 
 		if command, ok := ctrl.newCommand(req); ok {

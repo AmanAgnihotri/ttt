@@ -1,4 +1,4 @@
-// Copyright 2024 Aman Agnihotri
+// Copyright 2024-2026 Aman Agnihotri
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package web
@@ -29,6 +29,8 @@ func (c *Conn) OnRequest(fun func(conn *Conn, ctrl *Controller, req request)) {
 	c.conn.OnMessage(func(conn *ws.Conn, msgType ws.MessageType, bytes []byte) {
 		if msgType != ws.TextMessage {
 			c.CloseAsInvalidMessage()
+
+			return
 		}
 
 		var req request
